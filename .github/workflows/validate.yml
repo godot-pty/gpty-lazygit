@@ -1,0 +1,31 @@
+# Minimal content check until the gpty profiles-migration item wires the
+# authoritative validator (gpty's parse_manifest, which the install path
+# runs anyway): the manifest must parse as TOML and declare exactly this
+# repo's id — the install target's contract. Tile/schema validation stays
+# gpty's job; a duplicate here would drift.
+name: validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: |
+          python3 - <<'EOF'
+          import tomllib
+          with open("gpty-plugin.toml", "rb") as f:
+              m = tomllib.load(f)
+          assert m.get("id") == "godot-pty/gpty-lazygit", f"manifest id must be godot-pty/gpty-lazygit, got {m.get('id')!r}"
+          assert isinstance(m.get("name"), str) and m["name"], "name is required"
+          assert isinstance(m.get("version"), str) and m["version"], "version is required"
+          assert isinstance(m.get("min_gpty_version"), str) and m["min_gpty_version"], "min_gpty_version is required"
+          assert isinstance(m.get("profiles"), list) and m["profiles"], "at least one [[profiles]] entry is required"
+          print(f"manifest ok: {m['id']} {m['version']}")
+          EOF

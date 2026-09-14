@@ -1,0 +1,16 @@
+# gpty plugin manifest — validated by the gpty CLI at install time.
+#
+# min_gpty_version is the current CLI release: the plugin installs today,
+# and its profile becomes active in the GUI once installed-plugin profiles
+# surface (the gpty v0.5.5 profiles migration).
+id = "godot-pty/gpty-lazygit"
+name = "Lazygit"
+version = "0.1.0"
+min_gpty_version = "0.5.4"
+platforms = ["linux", "macos", "windows"]
+
+[[profiles]]
+name = "Lazygit"
+tiles = [
+  { col = 0, row = 0, cspan = 60, rspan = 60, settings = { type = "terminal", pane_name = "Lazygit", attachment_id = "lazygit", command = "lazygit" } },
+]
